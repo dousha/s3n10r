@@ -1,42 +1,49 @@
-// ----- Headers ----- //
-#include <iostream>
-#include <string>
+#ifndef __HEADER_HPP
+#define __HEADER_HPP
+// ----- Headers ------- //
 #include <vector>
-#include <fstream>
-#include <sstream>
-#include <thread>
+
+#include <stdio.h>
+#include <string.h>
+#include <dlfcn.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
 // ----- Constants ------ //
-const int WINDOW_WIDTH = 240;
-const int WINDOW_HEIGHT = 160;
+extern const int WINDOW_WIDTH;
+extern const int WINDOW_HEIGHT;
 
 // ----- Variables/Resources ------ //
-SDL_Event e;
-SDL_Window* w = nullptr;
-SDL_Renderer* r = nullptr;
+extern SDL_Event e;
+extern SDL_Window* w;
+extern SDL_Renderer* r;
 
-SDL_Texture* tFont = nullptr;
-SDL_Texture* tTile = nullptr;
-SDL_Texture* tBg = nullptr;
-SDL_Texture* tFlash = nullptr;
-SDL_Texture* tMob = nullptr;
+extern SDL_Texture* tFont;
+extern SDL_Texture* tTile;
+extern SDL_Texture* tBg;
+extern SDL_Texture* tFlash;
+extern SDL_Texture* tMob;
 
-SDL_Thread* threadRenderer = nullptr;
-SDL_Thread* threadEvent = nullptr;
-SDL_Thread* threadAI = nullptr;
+extern SDL_Thread* threadRenderer;
+extern SDL_Thread* threadEvent;
+extern SDL_Thread* threadAI;
 
-Uint32 eventMobMove;
-Uint32 eventMobAttack;
-Uint32 eventMobDefend;
-Uint32 eventMobLoot;
-Uint32 eventMobPick;
+extern const Uint32 eventHalt;
+extern const Uint32 eventMobMove;
+extern const Uint32 eventMobAttack;
+extern const Uint32 eventMobDefend;
+extern const Uint32 eventMobLoot;
+extern const Uint32 eventMobPick;
+extern const Uint32 eventBGMstart;
+extern const Uint32 eventBGMstop;
+extern const Uint32 eventBGMvolumeChange;
+extern const Uint32 eventBGMchange;
 
 // ----- Enumrations ----- //
 enum eEffect{ // TODO: Add more effect types
-	EFF_UNUSED = 0,
+	EFF_NONE = 0, // FIXME
+	EFF_UNUSED,
 	EFF_HEALING,
 	EFF_DAMAGEING,
 	EFF_INSTANT_HEAL,
@@ -44,10 +51,10 @@ enum eEffect{ // TODO: Add more effect types
 };
 
 enum eDirection{
-	D_NORTH = 0, // ^
-	D_SOUTH, // v
-	D_WEST, // <
-	D_EAST // >
+	D_UP = 0, // ^
+	D_DOWN, // v
+	D_LEFT, // <
+	D_RIGHT // >
 };
 
 // ----- Structures/Classes ----- //
@@ -88,17 +95,20 @@ struct item{
 };
 
 struct key{
-	unsigned long int UID;
+	Uint16 UID;
 };
 
 class vector{
 	public:
+		vector();
+		vector(float x, float y);
+		~vector();
 		void set(float x, float y);
-		vector get();
+		vector* get();
 		void print();
 
 	private:
-		float x, y;
+		float _x, _y;
 };
 
 class renderable{
@@ -106,55 +116,57 @@ class renderable{
 		SDL_Texture* getTexture();
 		void setTexture(const char* path);
 		location getLocation();
-		void setLocation();
+		void setLocation(int x, int y);
 
 	private:
-		SDL_Texture* texture;
-		location loc;
+		SDL_Texture* _texture;
+		location _loc;
 };
 
 class container{
 	public:
-		void put(item* i);
-		void get(item* i);
+		container(int size);
+		void putItem(item i);
+		void getItem(item i);
+		item* getItemList();
 	
 	private:
-		item* inv;
+		int _size;
+		item* _inv;
 };
 
 class chest : public container{
 	public:
 		void place(location l);
-		void take();
+		void take(mob* src);
 		void lock(key k);
-		void unlock();
+		void unlock(key k);
+		bool isLocked();
 
 	private:
-		location loc;
-		key* k;
+		location _loc;
+		key _k;
+		bool _hasLock;
 };
 
 class mob : public renderable{
 	public:
-		void attack(mob target);
-		void defend();
-
+		void attack(mob* target);
+		void harm(int pt);
+		void heal(int pt);
 		void give(item i);
 		void get(item i);
-
 		void sell(item i);
 		void buy(item i);
-
 		void talk();
-
 		void walk(eDirection dirc, short int speed);
-
 		unsigned short int getType();
 		void setType();
-
 		SDL_Texture* getTexture();
 		void setTexture(SDL_Texture* texture);
 		
+		container* getContainer();
+
 	protected:
 		location loc;
 		unsigned short int type;
@@ -166,7 +178,8 @@ class mob : public renderable{
 };
 
 class npc : public mob{
-	
+	public:
+
 };
 
 class player : public mob{
@@ -184,6 +197,8 @@ class sRenderer{
 		void render(SDL_Renderer* renderer);
 	
 	private:
-		
+		std::vector<renderable*> vren;
 };
+
+#endif
 

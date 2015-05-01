@@ -2,7 +2,7 @@
 
 static int tEvent(void* data){
 	for(;;){
-		std::cout << "[tEvent] Event thread created." << std::endl;
+		printf("[tEvent] Event thread created.");
 		while(SDL_WaitEvent(&e)){
 			switch(e.type){
 				case SDL_KEYDOWN:
@@ -44,7 +44,7 @@ static int tEvent(void* data){
 					}
 					break;
 				case SDL_QUIT:
-					std::cout << "[tEvent] Event thread destroyed." << std::endl;
+					printf("[tEvent] Event thread destroyed.");
 					return 0;
 			}
 		}
@@ -54,13 +54,11 @@ static int tEvent(void* data){
 static int tRenderer(void* data){
 	for(;;){
 		while(SDL_WaitEvent(&e)){
-			switch(e.type){
-				case SDL_QUIT:
-					return 0;
-					break;
-				default:
-					// redraw screen anyway
-					break;
+			Uint32 type = e.user.type;
+			if(type == eventHalt){
+				return 0;
+			}else{
+				// repaint anyway
 			}
 		}
 	}
@@ -69,13 +67,40 @@ static int tRenderer(void* data){
 static int tAI(void* data){
 	for(;;){
 		while(SDL_WaitEvent(&e)){
-			switch(e.type){
-				case eventMobMove:
-					break;
-				default:
-					break;
+			Uint32 type = e.user.type;
+			if(type == eventMobMove){
+				continue;
 			}
-			return 0;
+			else if(type == eventHalt){
+				return 0;
+			}
+		}
+	}
+}
+
+static int tBGM(void* data){
+	for(;;){
+		while(SDL_WaitEvent(&e)){
+			Uint32 type = e.user.type;
+			if(type == eventBGMstart){
+				printf("[tBGM] Now start BGM.");
+				break;
+			}
+			else if(type == eventBGMchange){
+				printf("[tBGM] Now BGM change to %s", e.user.data1);
+				break;
+			}
+			else if(type == eventBGMstop){
+				printf("[tBGM] Now stop BGM.");
+				break;
+			}
+			else if(type == eventBGMvolumeChange){
+				printf("[tBGM] BGM volume: %f", e.user.data1);
+				break;
+			}
+			else if(type == eventHalt){
+				return 0;
+			}
 		}
 	}
 }
@@ -92,11 +117,12 @@ void init(){
 	SDL_RenderPresent(r);
 
 	// register event
+	/*
 	eventMobMove = SDL_RegisterEvents(1);
 	eventMobAttack = SDL_RegisterEvents(2);
 	eventMobDefend = SDL_RegisterEvents(3);
 	eventMobLoot = SDL_RegisterEvents(4);
-	eventMobPick = SDL_RegisterEvents(5);
+	eventMobPick = SDL_RegisterEvents(5);*/
 
 	// create event thread
 	threadEvent = SDL_CreateThread(tEvent, "EventThread", (void *) 0);
@@ -124,13 +150,13 @@ void shutdown(){
 }
 
 int main(int argc, char **argv) {
-    std::cout << "[s3n10r] Hello!" << std::endl;
+    printf("[s3n10r] Hello!");
     init();
-	std::cout << "[s3n10r] Now give the control to Event bus" << std::endl;
+	printf("[s3n10r] Now give the control to Event bus");
 	wait();
-	std::cout << "[s3n10r] Now performing clean up" << std::endl;
+	printf("[s3n10r] Now performing clean up");
 	shutdown();
-	std::cout << "[s3n10r] Have a nice day :)" << std::endl;
+	printf("[s3n10r] Have a nice day :)");
 	return 0;
 }
 
