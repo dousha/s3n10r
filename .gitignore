@@ -2,4 +2,6 @@ test/
 opengl++
 draft/
 *~
+*o
 build/
+/Debug/
