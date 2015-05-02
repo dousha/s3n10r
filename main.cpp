@@ -116,15 +116,7 @@ void init(){
 	SDL_RenderClear(r);
 	SDL_RenderPresent(r);
 
-	// register event
-	/*
-	eventMobMove = SDL_RegisterEvents(1);
-	eventMobAttack = SDL_RegisterEvents(2);
-	eventMobDefend = SDL_RegisterEvents(3);
-	eventMobLoot = SDL_RegisterEvents(4);
-	eventMobPick = SDL_RegisterEvents(5);*/
-
-	// create event thread
+	// create threads
 	threadEvent = SDL_CreateThread(tEvent, "EventThread", (void *) 0);
 	threadRenderer = SDL_CreateThread(tRenderer, "EventRenderer", (void *) 0);
 	threadAI = SDL_CreateThread(tAI, "EventAI", (void *) 0);

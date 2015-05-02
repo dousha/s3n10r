@@ -41,6 +41,11 @@ void renderable::setTexture(const char* path){
 	this->_texture = IMG_LoadTexture(r, path);
 }
 
+void renderable::setTexture(SDL_Texture* tex){
+	// we save it.
+	this->_texture = tex;
+}
+
 SDL_Texture* renderable::getTexture(){
 	return this->_texture;
 }
@@ -99,4 +104,37 @@ void chest::take(mob* m){
 	m->getContainer()->putItem(i);
 }
 
+// --- mob --- //
+void mob::attack(mob* m){
+	m->harm((int) this->_attr.atk * this->_attr.smt *
+			(this->_attr.spd - m->getAttribute().def) *
+			getRandom(this->_attr.seed, 1, this->_attr.expr));
+}
 
+void mob::harm(int pt){
+	this->_attr.hp -= pt;
+}
+
+void mob::heal(int pt){
+	this->_attr.hp += pt;
+}
+
+container* mob::getContainer(){
+	return this->_inv;
+}
+
+unsigned short int mob::getType(){
+	return this->_type;
+}
+
+void mob::setType(unsigned short int type){
+	this->_type = type;
+}
+
+void mob::talk(){
+	// TODO: pop up a dialogue, and make some conversations
+}
+
+attribute mob::getAttribute(){
+	return this->_attr;
+}

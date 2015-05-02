@@ -3,6 +3,11 @@
 // ----- Constants ------ //
 const int WINDOW_WIDTH = 240;
 const int WINDOW_HEIGHT = 160;
+const int FONT_OFFSET = 10;
+const int FONT_WIDTH = 8;
+const int FONT_HEIGHT = 8;
+const int CHAR_PER_ROW = 16;
+const int CHAR_PER_COL = 16;
 
 // ----- Variables/Resources ------ //
 SDL_Event e;
