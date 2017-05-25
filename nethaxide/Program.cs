@@ -16,12 +16,10 @@ namespace nethaxide
 			screen.Clear();
 			screen.Print("Nethaxide");
 			Layer layer = screen.CreateLayer(1, 1, 20, 20);
-			screen.RegisterLayer(layer);
 			layer.DrawAt(0, 0, '!', ConsoleColor.White, ConsoleColor.Blue);
-			layer.Write(1, 0, "Here it is!", ConsoleColor.White, ConsoleColor.Cyan);
-			Layer anotherLayer = screen.CreateLayer(5, 2, 15, 2);
-			anotherLayer.Write(0, 0, "I should cover them up.", ConsoleColor.Blue, ConsoleColor.Gray);
-			screen.RegisterLayer(anotherLayer);
+			layer.Write(0, 1, "Here it is!", ConsoleColor.White, ConsoleColor.Cyan);
+			Layer anotherLayer = screen.CreateLayer(2, 2, 15, 2);
+			anotherLayer.Write(0, 0, "Hi there!", ConsoleColor.Blue, ConsoleColor.Gray);
 			screen.Render();
 		}
 	}

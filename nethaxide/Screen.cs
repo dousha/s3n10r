@@ -22,8 +22,8 @@ namespace nethaxide
 		{
 			_col = 0;
 			_row = 0;
-			this._width = w;
-			this._height = h;
+			_width = w;
+			_height = h;
 			Console.SetWindowSize(w, h);
 			_layers = new LinkedList<Layer>();
 		}
@@ -35,7 +35,7 @@ namespace nethaxide
 
 		public void Print(string s)
 		{
-			Console.Out.Write(s);
+			Console.Write(s);
 		}
 
 		/// <summary>
@@ -53,7 +53,6 @@ namespace nethaxide
 		{
 			_row = row;
 			_col = col;
-			Console.SetCursorPosition(col, row);
 		}
 
 		/// <summary>
@@ -78,7 +77,7 @@ namespace nethaxide
 		}
 
 		/// <summary>
-		/// Creates a layer.
+		/// Creates a layer and register it.
 		/// </summary>
 		/// <returns>The layer object.</returns>
 		/// <param name="x">The x coordinate.</param>
@@ -87,12 +86,8 @@ namespace nethaxide
 		/// <param name="h">The height.</param>
 		public Layer CreateLayer(int x, int y, int w, int h)
 		{
-			Layer l = new Layer(
-				x > _col ? _col : x,
-				y > _row ? _row : y,
-				w > _width ? _width : w, 
-				h > _height ? _height : h
-			);
+			Layer l = new Layer(x, y, w, h);
+			RegisterLayer(l);
 			return l;
 		}
 
@@ -120,12 +115,12 @@ namespace nethaxide
 					for (int j = 0; j < layer.Width; j++)
 					{
 						if (_col + j == _width) break;
-						Console.SetCursorPosition(_col + j, _row + i);
 						Console.BackgroundColor = 
-							layer.GetTextureAt(_row + i, _col + j).Background;
+							layer.GetTextureAt(i, j).Background;
 						Console.ForegroundColor =
-							layer.GetTextureAt(_row + i, _col + j).Foreground;
-						Console.Write(layer.GetCharAt(_row + i, _col + j));
+							layer.GetTextureAt(i, j).Foreground;
+						Console.SetCursorPosition(_col + j, _row + i);
+						Console.Write(layer.GetCharAt(i, j));
 					}
 				}
 			}
