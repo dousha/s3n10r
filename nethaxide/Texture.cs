@@ -33,6 +33,11 @@ namespace nethaxide
 			{
 				return _fg;
 			}
+
+			set
+			{
+				_fg = value;
+			}
 		}
 
 		public ConsoleColor Background
@@ -40,6 +45,11 @@ namespace nethaxide
 			get
 			{
 				return _bg;
+			}
+
+			set
+			{
+				_bg = value;
 			}
 		}
 

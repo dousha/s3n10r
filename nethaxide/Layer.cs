@@ -18,9 +18,15 @@ namespace nethaxide
 		/// <param name="y">The y coordinate.</param>
 		/// <param name="w">The width.</param>
 		/// <param name="h">The height.</param>
-		public Layer(int x, int y, int w, int h)
+		public Layer(int x, int y, int w, int h, ConsoleColor fg = ConsoleColor.White, ConsoleColor bg = ConsoleColor.Black)
 		{
 			_buffer = new Texture[w * h];
+			for (int i = 0; i < w * h; i++)
+			{
+				_buffer[i].Text = ' ';
+				_buffer[i].Foreground = fg;
+				_buffer[i].Background = bg;
+			}
 			_x = x;
 			_y = y;
 			_width = w;
@@ -47,36 +53,14 @@ namespace nethaxide
 		/// <param name="fg">Foreground.</param>
 		/// <param name="bg">Background.</param>
 		public void DrawAt(int row, 
-		                   int col, 
-		                   char c, 
-		                   ConsoleColor fg, 
-		                   ConsoleColor bg)
+						   int col, 
+						   char c, 
+						   ConsoleColor fg, 
+						   ConsoleColor bg)
 		{
-			_buffer[row * _width + col] = new Texture(c, fg, bg);
-		}
-
-		public void Write(int row, 
-		                  int col, 
-		                  string msg, 
-		                  ConsoleColor fg, 
-		                  ConsoleColor bg)
-		{
-			int x = col, y = row;
-			foreach (char c in msg)
-			{
-				if(x == _width)
-				{
-					x = 0;
-					y++;
-					if(y == _height)
-					{
-						// overflown!
-						y = 0;
-					}
-				}
-				_buffer[y * _width + x] = new Texture(c, fg, bg);
-				x++;
-			}
+			_buffer[row * _width + col].Text = c;
+			_buffer[row * _width + col].Foreground = fg;
+			_buffer[row * _width + col].Background = bg;
 		}
 
 		/// <summary>

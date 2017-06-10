@@ -15,11 +15,11 @@ namespace nethaxide
 
 			screen.Clear();
 			screen.Print("Nethaxide");
-			Layer layer = screen.CreateLayer(1, 1, 20, 20);
-			layer.DrawAt(0, 0, '!', ConsoleColor.White, ConsoleColor.Blue);
-			layer.Write(0, 1, "Here it is!", ConsoleColor.White, ConsoleColor.Cyan);
-			Layer anotherLayer = screen.CreateLayer(2, 2, 15, 2);
-			anotherLayer.Write(0, 0, "Hi there!", ConsoleColor.Blue, ConsoleColor.Gray);
+			Canvas canvas = new Canvas(1, 1, 15, 15, ConsoleColor.White, ConsoleColor.Blue);
+			canvas.SetBorder(BorderType.LEFT | BorderType.TOP);
+			canvas.Write(0, 0, "Hi");
+
+			canvas.Register(screen);
 			screen.Render();
 		}
 	}
