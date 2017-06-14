@@ -4,12 +4,17 @@ namespace nethaxide
 	/// <summary>
 	/// Entity is the basic moving stuff.
 	/// </summary>
+	[Serializable]
 	public abstract class IEntity
 	{
 		protected IEntity()
 		{
-			_texture = new Texture('E', ConsoleColor.White, ConsoleColor.Black);
-			_inv = new Inventory();
+			_name = string.Empty;
+			_chunk = null;
+			_x = -1;
+			_y = -1;
+			_texture = new Texture('E', ConsoleColor.Black, ConsoleColor.Red);
+			_inv = null;
 		}
 
 		public Texture Texture
@@ -39,6 +44,7 @@ namespace nethaxide
 		
 		}
 
+		protected string _name;
 		protected Chunk _chunk;
 		protected int _x, _y;
 		protected Texture _texture;

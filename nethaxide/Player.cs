@@ -3,9 +3,10 @@ namespace nethaxide
 {
 	public class Player : IEntity
 	{
-		public Player()
+		public Player(string name)
 		{
-			_inv = new Inventory();
+			_name = name;
+			// then consult player database to create this entity
 		}
 	}
 }
