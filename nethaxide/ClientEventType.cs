@@ -9,6 +9,8 @@ namespace nethaxide
 	enum ClientEventType
 	{
 		DUMMY = 0,
+		LOGIN,
+		LOGOUT,
 		MOVE, /// player moves
 		USE, /// player uses a <see cref="Machine"/>
 		CONSUME, /// player uses an <see cref="Item"/>

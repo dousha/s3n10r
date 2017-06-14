@@ -11,16 +11,16 @@ namespace nethaxide
 		/// <param name="args">The command-line arguments.</param>
 		public static void Main(string[] args)
 		{
-			Screen screen = new Screen();
+			// [DBG]
+			Console.Out.WriteLine("Multiple connection test...");
+			Server server = new Server();
 
-			screen.Clear();
-			screen.Print("Nethaxide");
-			Canvas canvas = new Canvas(1, 1, 15, 15, ConsoleColor.White, ConsoleColor.Blue);
-			canvas.SetBorder(BorderType.LEFT | BorderType.TOP);
-			canvas.Write(0, 0, "Hi");
+			Client client = new Client("dousha");
+			Client client2 = new Client("innsd");
+			Client client3 = new Client("Qinglem");
 
-			canvas.Register(screen);
-			screen.Render();
+			Console.WriteLine("Done. Press any key to exit.");
+			Console.ReadKey(true);
 		}
 	}
 }

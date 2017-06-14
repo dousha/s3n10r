@@ -52,10 +52,12 @@
   <ItemGroup>
     <Compile Include="BorderType.cs" />
     <Compile Include="Canvas.cs" />
+    <Compile Include="Client.cs" />
     <Compile Include="ClientEvent.cs" />
     <Compile Include="ClientEventType.cs" />
     <Compile Include="ClientIdentifier.cs" />
     <Compile Include="Effect.cs" />
+    <Compile Include="MachineCodeCalculator.cs" />
     <Compile Include="Mob.cs" />
     <Compile Include="PlayerDatabase.cs" />
     <Compile Include="Program.cs" />
@@ -78,6 +80,7 @@
     <Compile Include="ItemType.cs" />
     <Compile Include="ItemStack.cs" />
     <Compile Include="Timer.cs" />
+    <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

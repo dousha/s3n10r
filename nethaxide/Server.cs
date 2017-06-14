@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Net;
 using System.Net.Sockets;
+using System.IO;
 
 namespace nethaxide
 {
@@ -13,34 +14,61 @@ namespace nethaxide
 	{
 		public Server()
 		{
-			_listener = new TcpListener(new IPAddress(new byte[]{0x0, 0x0, 0x0, 0x0}), 25565);
+			_listener = new TcpListener(IPAddress.Parse("0.0.0.0"), 25566);
+			_users = new List<User>();
+			Start();
 		}
 
 		public void Start()
 		{
-			Thread acceptor = new Thread(AcceptConnection);
-			Thread pooler = new Thread(Pool);
-			acceptor.Start();
-			pooler.Start();
+			_acceptor = new Thread(AcceptConnection);
+			_pooler = new Thread(Pool);
+			_running = true;
+			_acceptor.Start();
+			_pooler.Start();
 		}
 
 		public void Stop()
 		{
-			foreach (TcpClient client in _clients) 
+			
+			foreach (User user in _users) 
 			{
-				client.Close();
+				user.Client.Close();
+				_users.Remove(user);
 			}
 		}
 
 		private void AcceptConnection()
 		{
-			TcpClient curClient = null;
-			for(;;)
+			_listener.Start();
+			for (; ; )
 			{
+				TcpClient curClient = null;
 				Thread.Sleep(1000);
-				curClient = _listener.AcceptTcpClient();
-				Console.WriteLine(string.Format("Connection in : {0}", curClient.ToString()));
-				_clients.Add(curClient);
+				if (!_running) return;
+				try
+				{
+					curClient = _listener.AcceptTcpClient();
+					if (curClient != null)
+					{
+						// [DBG]
+						Console.WriteLine("[Server] Establishing connection...");
+						NetworkStream stream = curClient.GetStream();
+						stream.ReadTimeout = 2000;
+						stream.WriteTimeout = 2000;
+						BinaryReader reader = new BinaryReader(stream);
+						string data = reader.ReadString();
+						ClientIdentifier ident = Newtonsoft.Json.JsonConvert.DeserializeObject<ClientIdentifier>(data);
+						User user = new User(curClient, ident);
+						_users.Add(user);
+						Console.WriteLine(string.Format("[Server] Connected with : {0}", user.Identifier.Name));
+					}
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine("[Server] X");
+					Console.WriteLine(ex.ToString());
+				}
 			}
 		}
 
@@ -51,18 +79,13 @@ namespace nethaxide
 
 		private void Pool()
 		{
-			if (_clients.Count == 0)
-			{
-				Thread.Sleep(1000);
-			}
-			foreach (TcpClient client in _clients)
-			{
-				client.ReceiveTimeout = 2000;
-
-			}
+			
 		}
 
+		private bool _running;
 		private TcpListener _listener;
-		private List<TcpClient> _clients;
+		private List<User> _users;
+		private Thread _acceptor;
+		private Thread _pooler;
 	}
 }
